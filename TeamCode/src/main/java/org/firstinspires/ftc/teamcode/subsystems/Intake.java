@@ -78,6 +78,12 @@ public class Intake implements Subsystem {
         motor.setPower(STOP_POWER);
     }
 
+    public Command STOP = new InstantCommand(() -> {
+            motor.setPower(STOP_POWER);     // Turn it OFF
+    }).requires(this);
+    public Command START = new InstantCommand(() -> {
+        motor.setPower(INTAKE_POWER);     // Turn it OFF
+    }).requires(this);
     /**
      * Command to reverse the intake motor.
      * This is used to push out game pieces that might be stuck.
