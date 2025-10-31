@@ -9,7 +9,7 @@ import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_N
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-// These are the “subsystems” — little robot parts that do special jobs
+// These are the "subsystems" — little robot parts that do special jobs
 import org.firstinspires.ftc.teamcode.subsystems.BallLoadingServo;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.ShootingDirectionServo;
@@ -30,7 +30,9 @@ import dev.nextftc.hardware.impl.MotorEx;
 @TeleOp(name = "Robot Centric TeleOp")
 public class RobotCentricTeleOp extends NextFTCOpMode {
 
-    // These are the robot's different systems (we’ll use them later)
+    //Added this code to fix the speed on robot navigation
+    private static final double STRAFE_SPEED_MULTIPLIER = 0.7; // <--- ADD THIS LINE HERE
+    // These are the robot's different systems (we'll use them later)
     private ShootingSystem shootingSystem;
     private ShootingDirectionServo shootingDirectionServo;
     private BallLoadingServo ballLoadingServo;
@@ -45,7 +47,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         shootingDirectionServo = ShootingDirectionServo.getInstance(telemetry);
         ballLoadingServo = BallLoadingServo.getInstance(telemetry);
 
-        // Here we “add” all these subsystems so NextFTC can manage and update them automatically
+        // Here we "add" all these subsystems so NextFTC can manage and update them automatically
         addComponents(
                 new SubsystemComponent(shootingSystem),
                 new SubsystemComponent(intakeSystem),
@@ -56,12 +58,13 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         );
     }
 
-    // These are our 4 drive motors (the robot’s wheels)
+    // These are our 4 drive motors (the robot's wheels)
     // The MotorEx class is like a smarter motor object from the NextFTC library
-    private final MotorEx frontLeftMotor = new MotorEx(LEFT_FRONT_MOTOR_NAME);
-    private final MotorEx frontRightMotor = new MotorEx(RIGHT_FRONT_MOTOR_NAME).reversed(); // reversed so both sides move forward correctly
-    private final MotorEx backLeftMotor = new MotorEx(LEFT_REAR_MOTOR_NAME);
-    private final MotorEx backRightMotor = new MotorEx(RIGHT_REAR_MOTOR_NAME).reversed();
+    private final MotorEx frontLeftMotor = new MotorEx(LEFT_FRONT_MOTOR_NAME).reversed();
+    private final MotorEx frontRightMotor = new MotorEx(RIGHT_FRONT_MOTOR_NAME);
+            
+    private final MotorEx backLeftMotor = new MotorEx(LEFT_REAR_MOTOR_NAME).reversed();
+    private final MotorEx backRightMotor = new MotorEx(RIGHT_REAR_MOTOR_NAME);
 
     // This method runs when the driver presses the START button on the Driver Station
     @Override
@@ -74,9 +77,10 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
                 backLeftMotor,
                 backRightMotor,
                 Gamepads.gamepad1().leftStickY(),  // forward/backward
-                Gamepads.gamepad1().leftStickX(),  // strafe left/right
+                //Gamepads.gamepad1().leftStickX(),  // strafe left/right
+                Gamepads.gamepad1().leftStickX().map(x -> x * -1.0 * STRAFE_SPEED_MULTIPLIER), //Added this line to fix the speed on Robt navigation
                 Gamepads.gamepad1().rightStickX()  // turn left/right
-        );
+                );
 
         // "Schedule" means start running that drive command
         driverControlled.schedule();
@@ -115,10 +119,10 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         // D-Pad Right → stop the ball loading servo
         Gamepads.gamepad2().dpadRight().whenBecomesTrue(ballLoadingServo.stopContinuous());
 //New Update
-        // D-Pad Left → run the ball loading servo backward (to load balls)
+        // D-Pad Up → aim the shooter down
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(shootingDirectionServo.downShootingServo);
 
-        // D-Pad Right → stop the ball loading servo
+        // D-Pad Down → aim the shooter up
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(shootingDirectionServo.upShootingServo);
 
     }
