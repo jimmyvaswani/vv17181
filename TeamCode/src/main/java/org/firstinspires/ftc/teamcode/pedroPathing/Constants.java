@@ -44,7 +44,7 @@ public class Constants {
 
     public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
             .forwardPodY(-.5)
-            .strafePodX(.5)
+            .strafePodX(-.5)
             .forwardEncoder_HardwareMapName(RIGHT_FRONT_MOTOR_NAME)
             .strafeEncoder_HardwareMapName(LEFT_FRONT_MOTOR_NAME)
             .strafeEncoderDirection(Encoder.REVERSE)
@@ -53,10 +53,11 @@ public class Constants {
             .IMU_HardwareMapName("imu")
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(
-                            RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                            RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
                             RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
                     )
             );
+
 
     public static PathConstraints pathConstraints = new PathConstraints(
             0.995,
