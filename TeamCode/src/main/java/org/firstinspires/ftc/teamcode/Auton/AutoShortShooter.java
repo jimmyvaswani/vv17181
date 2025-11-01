@@ -1,9 +1,22 @@
 package org.firstinspires.ftc.teamcode.Auton;
 
+import static org.firstinspires.ftc.teamcode.ChassisConstants.LEFT_FRONT_MOTOR_NAME;
+import static org.firstinspires.ftc.teamcode.ChassisConstants.LEFT_REAR_MOTOR_NAME;
+import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_FRONT_MOTOR_NAME;
+import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_NAME;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.subsystems.BallLoadingServo;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.ShootingDirectionServo;
+import org.firstinspires.ftc.teamcode.subsystems.ShootingSystem;
+
+import dev.nextftc.core.components.BindingsComponent;
+import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
+import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.impl.CRServoEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
@@ -24,15 +37,17 @@ import dev.nextftc.hardware.impl.MotorEx;
 public class AutoShortShooter extends NextFTCOpMode {
 
     // Shooter hardware
-    private MotorEx shooterMotor;
-    private CRServoEx loadServo;
+    private ShootingSystem shootingSystem;
+    private ShootingDirectionServo shootingDirectionServo;
+    private BallLoadingServo ballLoadingServo;
+    private Intake intakeSystem;
 
     // Drivetrain hardware (mecanum or tank-style with 4 motors)
     // IMPORTANT: make sure these names match the names in the robot config
-    private MotorEx frontLeft;
-    private MotorEx frontRight;
-    private MotorEx backLeft;
-    private MotorEx backRight;
+    private final MotorEx frontLeft = new MotorEx(LEFT_FRONT_MOTOR_NAME).reversed();
+    private final MotorEx frontRight = new MotorEx(RIGHT_FRONT_MOTOR_NAME);
+    private final MotorEx backLeft = new MotorEx(LEFT_REAR_MOTOR_NAME).reversed();
+    private final MotorEx backRight = new MotorEx(RIGHT_REAR_MOTOR_NAME);
 
     // --- TUNING CONSTANTS (adjust on your robot) ---
     private static final double TICKS_PER_REV = 537.6;          // goBILDA 312 RPM as example
@@ -45,25 +60,27 @@ public class AutoShortShooter extends NextFTCOpMode {
     @Override
     public void onInit() {
         // Shooter mech
-        shooterMotor = new MotorEx("shooter_motor");
-        loadServo = new CRServoEx("feeder_servo");
-
-        // Drivetrain motors
-        frontLeft = new MotorEx("front_left");
-        frontRight = new MotorEx("front_right");
-        backLeft = new MotorEx("back_left");
-        backRight = new MotorEx("back_right");
-
-        // Reverse one side if needed for forward motion
-        // (YOU MAY NEED TO CHANGE based on your wiring / drivetrain orientation)
-        frontRight.reversed();
-        backRight.reversed();
+        // We connect our subsystems to the robot and give them access to telemetry (data shown on driver station)
+        shootingSystem = ShootingSystem.getInstance(telemetry);
+        intakeSystem = Intake.getInstance(telemetry);
+        shootingDirectionServo = ShootingDirectionServo.getInstance(telemetry);
+        ballLoadingServo = BallLoadingServo.getInstance(telemetry);
 
         // Reset encoders and prepare for RUN_TO_POSITION style control
         initDriveMotor(frontLeft);
         initDriveMotor(frontRight);
         initDriveMotor(backLeft);
         initDriveMotor(backRight);
+
+        addComponents(
+                new SubsystemComponent(shootingSystem),
+                new SubsystemComponent(intakeSystem),
+                new SubsystemComponent(shootingDirectionServo),
+                new SubsystemComponent(ballLoadingServo),
+                //new SubsystemComponent(light),
+                BulkReadComponent.INSTANCE,   // reads all sensors at once for faster updates
+                BindingsComponent.INSTANCE    // helps connect buttons on the gamepads to commands
+        );
 
         telemetry.addLine("Status: Initialized");
         telemetry.update();
@@ -153,7 +170,7 @@ public class AutoShortShooter extends NextFTCOpMode {
                     frontRight.getCurrentPosition(),
                     backLeft.getCurrentPosition(),
                     backRight.getCurrentPosition());
-            telemetry.update();
+            //telemetry.update();
         }
 
         // stop drive power after motion completes
@@ -168,47 +185,47 @@ public class AutoShortShooter extends NextFTCOpMode {
         // === 1. Drive forward 10 inches ===
         driveForwardInches(10.0, 0.4);
         telemetry.addLine("Step 1: Drove forward 10 inches");
-        telemetry.update();
+        //telemetry.update();
 
         // === 2. Strafe right 10 inches ===
         strafeRightInches(10.0, 0.4);
         telemetry.addLine("Step 2: Strafed right 10 inches");
-        telemetry.update();
+        //telemetry.update();
 
         // === 3. Turn ~45 degrees clockwise ===
         // ~45 degrees = PI/4 radians ≈ 0.785
         turnRadians(0.785, 0.4);
         telemetry.addLine("Step 3: Turned ~45 deg CW");
-        telemetry.update();
+        //telemetry.update();
 
         // === 4. Shoot sequence ===
         // Spin up shooter
-        shooterMotor.setPower(1.0);
+        shootingSystem.setPower(0.25);
         telemetry.addLine("Shooter motor started");
-        telemetry.update();
+        //telemetry.update();
 
         // allow flywheel to reach speed (tune this)
         sleep(1000);
 
         // Feed rings
-        loadServo.setPower(1.0);
+        BallLoadingServo.getInstance().runForward();
         sleep(2000); // feed for 2s
-        loadServo.setPower(0.0);
+        BallLoadingServo.getInstance().stop();
         telemetry.addLine("Rings fed");
-        telemetry.update();
+        //telemetry.update();
 
         // Stop shooter
-        shooterMotor.setPower(0.0);
+        shootingSystem.setPower(0.0);
         telemetry.addLine("Shooter stopped");
-        telemetry.update();
+        //telemetry.update();
 
         // Final safety stop
         stopOpMode();
     }
 
     public void stopOpMode() {
-        shooterMotor.setPower(0.0);
-        loadServo.setPower(0.0);
+        shootingSystem.setPower(0.0);
+        ballLoadingServo.stop();
 
         frontLeft.setPower(0);
         frontRight.setPower(0);
@@ -216,6 +233,6 @@ public class AutoShortShooter extends NextFTCOpMode {
         backRight.setPower(0);
 
         telemetry.addLine("All motors stopped");
-        telemetry.update();
+        //telemetry.update();
     }
 }

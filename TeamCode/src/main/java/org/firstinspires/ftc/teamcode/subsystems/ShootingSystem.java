@@ -139,6 +139,11 @@
             //telemetry.update();
         }).requires(this);
 
+        public void setPower(double power) {
+            shootingMotor1.setPower(power);
+            shootingMotor2.setPower(power);
+        }
+
         // Command to stop the shooting motors
     //    public Command stop = new InstantCommand(() -> shooterMotors.setPower(STOP_POWER)).requires(this);
 
