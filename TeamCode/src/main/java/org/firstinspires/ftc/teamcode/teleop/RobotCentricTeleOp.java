@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.subsystems.BallLoadingServo;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.ShootingDirectionServo;
 import org.firstinspires.ftc.teamcode.subsystems.ShootingSystem;
+import org.firstinspires.ftc.teamcode.subsystems.Light;
+
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -21,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
@@ -37,6 +40,8 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     private ShootingDirectionServo shootingDirectionServo;
     private BallLoadingServo ballLoadingServo;
     private Intake intakeSystem;
+    private Light light;
+
 
     // This is the "constructor" — runs once when the program starts loading
     public RobotCentricTeleOp() {
@@ -47,12 +52,16 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         shootingDirectionServo = ShootingDirectionServo.getInstance(telemetry);
         ballLoadingServo = BallLoadingServo.getInstance(telemetry);
 
+        // FIX: Get the singleton instance instead of creating new Light()
+        light = Light.INSTANCE;
+
         // Here we "add" all these subsystems so NextFTC can manage and update them automatically
         addComponents(
                 new SubsystemComponent(shootingSystem),
                 new SubsystemComponent(intakeSystem),
                 new SubsystemComponent(shootingDirectionServo),
                 new SubsystemComponent(ballLoadingServo),
+                new SubsystemComponent(light),
                 BulkReadComponent.INSTANCE,   // reads all sensors at once for faster updates
                 BindingsComponent.INSTANCE    // helps connect buttons on the gamepads to commands
         );
@@ -79,7 +88,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
                 Gamepads.gamepad1().leftStickY(),  // forward/backward
                 //Gamepads.gamepad1().leftStickX(),  // strafe left/right
                 Gamepads.gamepad1().leftStickX().map(x -> x * -1.0 * STRAFE_SPEED_MULTIPLIER), //Added this line to fix the speed on Robt navigation
-                Gamepads.gamepad1().rightStickX()  // turn left/right
+                Gamepads.gamepad1().rightStickX().map(x -> x * -1.0 * STRAFE_SPEED_MULTIPLIER) //Added this line to fix the speed on Robt navigation - strafe turn left/right
                 );
 
         // "Schedule" means start running that drive command
@@ -124,7 +133,6 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
 
         // D-Pad Down → aim the shooter up
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(shootingDirectionServo.upShootingServo);
-
     }
 
 }

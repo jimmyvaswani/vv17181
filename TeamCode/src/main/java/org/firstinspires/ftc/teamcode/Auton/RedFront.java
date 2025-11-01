@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.ShootingSystem;
 //import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 //import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
 //import org.firstinspires.ftc.teamcode.subsystems.Lift;
@@ -40,7 +39,6 @@ public class RedFront extends NextFTCOpMode {
         addComponents(
                 new PedroComponent(Constants::createFollower),
                 //new SubsystemComponent(LauncherSubsystem.INSTANCE, IntakeSubsystem.INSTANCE),
-                new SubsystemComponent(ShootingSystem.getInstance(telemetry)),
                 new SubsystemComponent(Intake.getInstance(telemetry)),
                 BulkReadComponent.INSTANCE
         );
@@ -52,8 +50,8 @@ public class RedFront extends NextFTCOpMode {
                 new FollowPath(scorePreload, true, 0.75),
                 //LauncherSubsystem.INSTANCE.launchTwo,
                 new ParallelGroup(
-                        Intake.getInstance().START
-                        //, new FollowPath(leave, true, 1.00)
+                        Intake.getInstance().START,
+                        new FollowPath(leave, true, 1.00)
                 ),
                 new Delay(0.5),
                 Intake.getInstance().STOP
@@ -73,9 +71,9 @@ public class RedFront extends NextFTCOpMode {
         scorePreload = new Path(new BezierLine(startPose, scorePose));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
 
-        //leave = PedroComponent.follower().pathBuilder()
-        //        .addPath(new BezierLine(scorePose, endPose))
-        //        .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();;
+        leave = PedroComponent.follower().pathBuilder()
+                .addPath(new BezierLine(scorePose, endPose))
+                .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();;
     }
 
 
