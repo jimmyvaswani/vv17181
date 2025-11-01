@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.subsystems.BallLoadingServo;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.ShootingDirectionServo;
 import org.firstinspires.ftc.teamcode.subsystems.ShootingSystem;
+import org.firstinspires.ftc.teamcode.subsystems.Light;
+
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -21,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
@@ -37,6 +40,8 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     private ShootingDirectionServo shootingDirectionServo;
     private BallLoadingServo ballLoadingServo;
     private Intake intakeSystem;
+    private Light light;
+
 
     // This is the "constructor" — runs once when the program starts loading
     public RobotCentricTeleOp() {
@@ -53,6 +58,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
                 new SubsystemComponent(intakeSystem),
                 new SubsystemComponent(shootingDirectionServo),
                 new SubsystemComponent(ballLoadingServo),
+                new SubsystemComponent(light),
                 BulkReadComponent.INSTANCE,   // reads all sensors at once for faster updates
                 BindingsComponent.INSTANCE    // helps connect buttons on the gamepads to commands
         );
@@ -124,7 +130,6 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
 
         // D-Pad Down → aim the shooter up
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(shootingDirectionServo.upShootingServo);
-
     }
 
 }
