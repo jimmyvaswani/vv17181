@@ -52,6 +52,9 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         shootingDirectionServo = ShootingDirectionServo.getInstance(telemetry);
         ballLoadingServo = BallLoadingServo.getInstance(telemetry);
 
+        // FIX: Get the singleton instance instead of creating new Light()
+        light = Light.INSTANCE;
+
         // Here we "add" all these subsystems so NextFTC can manage and update them automatically
         addComponents(
                 new SubsystemComponent(shootingSystem),
@@ -85,7 +88,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
                 Gamepads.gamepad1().leftStickY(),  // forward/backward
                 //Gamepads.gamepad1().leftStickX(),  // strafe left/right
                 Gamepads.gamepad1().leftStickX().map(x -> x * -1.0 * STRAFE_SPEED_MULTIPLIER), //Added this line to fix the speed on Robt navigation
-                Gamepads.gamepad1().rightStickX()  // turn left/right
+                Gamepads.gamepad1().rightStickX().map(x -> x * -1.0 * STRAFE_SPEED_MULTIPLIER) //Added this line to fix the speed on Robt navigation - strafe turn left/right
                 );
 
         // "Schedule" means start running that drive command

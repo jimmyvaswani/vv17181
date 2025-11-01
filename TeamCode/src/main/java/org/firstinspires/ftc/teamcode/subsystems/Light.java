@@ -10,7 +10,7 @@ public class Light implements Subsystem {
 
     private double brightness = 0.5;
 
-    private final ServoEx servo = new ServoEx("LIGHT");
+    private final ServoEx servo = new ServoEx("servo1");
     private Light() { }
 
     @Override
@@ -20,7 +20,9 @@ public class Light implements Subsystem {
 
     @Override
     public void initialize() {
-        servo.setPosition(0);
+        brightness = 1.0;  // ← ADD THIS LINE: Set to full brightness
+        servo.setPosition(brightness);  // ← ADD THIS LINE: Apply it immediately
+        //servo.setPosition(0);
     }
 
     public Command power(double brightness) {
