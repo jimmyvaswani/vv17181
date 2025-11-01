@@ -39,7 +39,7 @@ public class Constants {
             .leftRearMotorDirection(LEFT_REAR_MOTOR_DIRECTION)
             .rightFrontMotorDirection(RIGHT_FRONT_MOTOR_DIRECTION)
             .rightRearMotorDirection(RIGHT_REAR_MOTOR_DIRECTION)
-            .xVelocity(61.3148)
+            .xVelocity(69.6)
             .yVelocity(51.9894);
 
     public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
