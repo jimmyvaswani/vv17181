@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.ChassisConstants;
 public class Constants {
 
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(13.42633)
+            .mass(10.57)
             .forwardZeroPowerAcceleration(-28.28)
             .lateralZeroPowerAcceleration(-67.37)
             .useSecondaryTranslationalPIDF(false)
@@ -47,9 +47,11 @@ public class Constants {
             .strafePodX(-.5)
             .forwardEncoder_HardwareMapName(RIGHT_FRONT_MOTOR_NAME)
             .strafeEncoder_HardwareMapName(LEFT_FRONT_MOTOR_NAME)
-            .strafeEncoderDirection(Encoder.REVERSE)
-            .forwardTicksToInches(0.00294)
-            .strafeTicksToInches(0.00293)
+            //.strafeEncoderDirection(Encoder.REVERSE) //comment out
+            .forwardEncoderDirection(Encoder.REVERSE) //added new
+            .forwardTicksToInches((0.944882 * 2 * Math.PI)/2000)  // .forwardTicksToInches(0.00294)
+            .strafeTicksToInches((0.944882 * 2 * Math.PI)/2000) // .strafeTicksToInches(0.00293)
+
             .IMU_HardwareMapName("imu")
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(
