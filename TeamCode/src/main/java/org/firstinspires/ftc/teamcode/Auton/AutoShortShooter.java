@@ -91,7 +91,7 @@ public class AutoShortShooter extends NextFTCOpMode {
      */
     private void initDriveMotor(MotorEx m) {
         m.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        m.getMotor().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        m.getMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Anuj: it was RUN-TO-POSITION mode and commented
         m.setPower(0);
     }
 
@@ -165,12 +165,13 @@ public class AutoShortShooter extends NextFTCOpMode {
                         || backLeft.getMotor().isBusy()
                         || backRight.getMotor().isBusy())) {
 
-            telemetry.addData("fl/fr/bl/br", "%d / %d / %d / %d",
+            telemetry.addData("fl/fr/bl/br", "%f / %f / %f / %f",
                     frontLeft.getCurrentPosition(),
                     frontRight.getCurrentPosition(),
                     backLeft.getCurrentPosition(),
                     backRight.getCurrentPosition());
-            //telemetry.update();
+            telemetry.update();
+            sleep(10); //ANuj: Added this to give room for processing anything waiting for this thread to complete
         }
 
         // stop drive power after motion completes
@@ -183,44 +184,45 @@ public class AutoShortShooter extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed() {
         // === 1. Drive forward 10 inches ===
-        driveForwardInches(10.0, 0.4);
+        driveForwardInches(30.0, 0.4);
         telemetry.addLine("Step 1: Drove forward 10 inches");
-        //telemetry.update();
+        telemetry.update();
 
         // === 2. Strafe right 10 inches ===
-        strafeRightInches(10.0, 0.4);
+        strafeRightInches(20.0, 0.4);
         telemetry.addLine("Step 2: Strafed right 10 inches");
-        //telemetry.update();
+        telemetry.update();
 
         // === 3. Turn ~45 degrees clockwise ===
         // ~45 degrees = PI/4 radians ≈ 0.785
         turnRadians(0.785, 0.4);
         telemetry.addLine("Step 3: Turned ~45 deg CW");
-        //telemetry.update();
+        telemetry.update();
 
         // === 4. Shoot sequence ===
         // Spin up shooter
         shootingSystem.setPower(0.25);
         telemetry.addLine("Shooter motor started");
-        //telemetry.update();
+        telemetry.update();
 
         // allow flywheel to reach speed (tune this)
-        sleep(1000);
+        sleep(5000);
 
         // Feed rings
-        BallLoadingServo.getInstance().runForward();
-        sleep(2000); // feed for 2s
-        BallLoadingServo.getInstance().stop();
+        ballLoadingServo.runForward();
+        sleep(10000); // feed for 10s
+        ballLoadingServo.stop();
         telemetry.addLine("Rings fed");
-        //telemetry.update();
+        telemetry.update();
 
         // Stop shooter
         shootingSystem.setPower(0.0);
         telemetry.addLine("Shooter stopped");
-        //telemetry.update();
+        telemetry.update();
 
         // Final safety stop
         stopOpMode();
+        sleep(20000); // feed for 20s
     }
 
     public void stopOpMode() {
@@ -233,6 +235,6 @@ public class AutoShortShooter extends NextFTCOpMode {
         backRight.setPower(0);
 
         telemetry.addLine("All motors stopped");
-        //telemetry.update();
+        telemetry.update();
     }
 }
