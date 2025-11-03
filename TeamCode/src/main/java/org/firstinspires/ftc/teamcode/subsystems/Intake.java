@@ -77,6 +77,9 @@ public class Intake implements Subsystem {
     public void stop() {
         motor.setPower(STOP_POWER);
     }
+    public void start() {
+        motor.setPower(INTAKE_POWER);
+    }
 
     public Command STOP = new InstantCommand(() -> {
             motor.setPower(STOP_POWER);     // Turn it OFF

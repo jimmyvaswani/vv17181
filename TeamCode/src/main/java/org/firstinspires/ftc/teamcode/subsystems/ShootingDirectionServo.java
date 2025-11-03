@@ -59,6 +59,10 @@ public class ShootingDirectionServo implements Subsystem {
     // How much the servo moves each time you press a button
     private static final double SERVO_POS_INCREMENT = 0.05;
 
+    public void setPosition(double clampedPosition) {
+        servo.setPosition(clampedPosition);
+    }
+
     /**
      * Command to move the shooting servo UP a little.
      * This makes the robot aim higher.
