@@ -8,26 +8,35 @@ import dev.nextftc.hardware.impl.ServoEx;
 public class Light implements Subsystem {
     public static final Light INSTANCE = new Light();
 
-    private double brightness = 0.5;
+    // Servo positions for the goBILDA RGB Light (approximate common values)
+    // These specific values correspond to persistent, solid colors.
+    public static final double OFF_POSITION = 0.5;
+    public static final double SOLID_RED_POSITION = 0.7;
+    public static final double SOLID_GREEN_POSITION = 0.6;
+    public static final double SOLID_BLUE_POSITION = 0.8;
+
+    // Renamed from 'brightness' to 'targetPosition' to reflect the hardware
+    private double targetPosition = OFF_POSITION; // Default to OFF or safe state
 
     private final ServoEx servo = new ServoEx("servo1");
     private Light() { }
 
     @Override
     public void periodic() {
-        servo.setPosition(brightness);
+        // The periodic loop constantly applies the target position, ensuring the color/pattern stays active
+        servo.setPosition(targetPosition);
     }
 
     @Override
     public void initialize() {
-        brightness = 1.0;  // ← ADD THIS LINE: Set to full brightness
-        servo.setPosition(brightness);  // ← ADD THIS LINE: Apply it immediately
-        //servo.setPosition(0);
+        // We will command the light to turn on in the TeleOp code instead of here
+        // The periodic() loop will handle applying the default 'targetPosition'
     }
 
-    public Command power(double brightness) {
+    // New method name: setPattern, which takes the specific servo position constant
+    public Command setPattern(double position) {
         return new InstantCommand(() -> {
-            this.brightness = brightness;
+            this.targetPosition = position;
         }).requires(this);
     }
 }

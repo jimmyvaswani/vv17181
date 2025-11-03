@@ -28,6 +28,8 @@ import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
+import dev.nextftc.hardware.impl.Direction;
+import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
 @TeleOp(name = "Robot Centric TeleOp")
@@ -41,7 +43,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     private BallLoadingServo ballLoadingServo;
     private Intake intakeSystem;
     private Light light;
-
+    protected final IMUEx imu = new IMUEx("imu", Direction.DOWN, Direction.FORWARD).zeroed();
 
     // This is the "constructor" — runs once when the program starts loading
     public RobotCentricTeleOp() {
@@ -79,16 +81,17 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed() {
 
+        light.setPattern(Light.SOLID_GREEN_POSITION).schedule();
         // This tells the robot how to drive using mecanum wheels (which move in all directions)
         Command driverControlled = new MecanumDriverControlled(
                 frontLeftMotor,
                 frontRightMotor,
                 backLeftMotor,
                 backRightMotor,
-                Gamepads.gamepad1().leftStickY(),  // forward/backward
+                Gamepads.gamepad1().leftStickY().map(y -> y * -1.0 * STRAFE_SPEED_MULTIPLIER),
                 //Gamepads.gamepad1().leftStickX(),  // strafe left/right
-                Gamepads.gamepad1().leftStickX().map(x -> x * -1.0 * STRAFE_SPEED_MULTIPLIER), //Added this line to fix the speed on Robt navigation
-                Gamepads.gamepad1().rightStickX().map(x -> x * -1.0 * STRAFE_SPEED_MULTIPLIER) //Added this line to fix the speed on Robt navigation - strafe turn left/right
+                Gamepads.gamepad1().leftStickX().map(x -> x * -1.0 * STRAFE_SPEED_MULTIPLIER),
+                Gamepads.gamepad1().rightStickX().map(x -> x * 1.0 * STRAFE_SPEED_MULTIPLIER)
                 );
 
         // "Schedule" means start running that drive command
