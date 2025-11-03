@@ -12,16 +12,21 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.subsystems.BallLoadingServo;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.ShootingDirectionServo;
+import org.firstinspires.ftc.teamcode.subsystems.ShootingSystem;
 
 @Autonomous(name = "Qual Short Red Auto", group = "Autonomous")
 public class QualRedFrontAuton extends LinearOpMode {
 
     // Drive + shooter hardware
     private DcMotor leftFront, rightFront, leftBack, rightBack;
-    private DcMotor launcherMotor;
-    private DcMotorEx ballPusherMotor, intakeMotor;
-    private Servo stopperServo;
+    private Intake intakeSystem;
+    private ShootingSystem shootingSystem;
+    private BallLoadingServo ballPusherMotor;
+    private ShootingDirectionServo shootingDirectionServo;
+
 
     private boolean bShooterRunning = false;
 
@@ -56,11 +61,11 @@ public class QualRedFrontAuton extends LinearOpMode {
         rightFront = hardwareMap.dcMotor.get(RIGHT_FRONT_MOTOR_NAME);
         leftBack = hardwareMap.dcMotor.get(LEFT_REAR_MOTOR_NAME);
         rightBack = hardwareMap.dcMotor.get(RIGHT_REAR_MOTOR_NAME);
-//        ballPusherMotor = hardwareMap.get(DcMotorEx.class, "ballPusherMotor");
-//        launcherMotor = hardwareMap.dcMotor.get("launcherMotor");
-//        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
-//        stopperServo = hardwareMap.get(Servo.class, "stopperServo");
-//        Intake intakeMotor = Intake.getInstance(telemetry);
+
+        intakeSystem = Intake.getInstance(telemetry);
+        shootingDirectionServo = ShootingDirectionServo.getInstance(telemetry);
+        ballPusherMotor = BallLoadingServo.getInstance(telemetry);
+        shootingSystem = ShootingSystem.getInstance(telemetry);
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
@@ -84,15 +89,24 @@ public class QualRedFrontAuton extends LinearOpMode {
         if (opModeIsActive()) {
             telemetry.addData("Status", "Running Commands in Sequence");
             telemetry.update();
-            //sleep(5000);
+            intakeSystem.start();
+            sleep(5000);
+
+            shootingDirectionServo.setPosition(0.6);
+            sleep(2000);
             // === AUTON STEPS GO HERE ===
             // Example sequence:
             // 1. Spin up shooter & fire
             // shootPowerCore(1.0, false, 3200);
             // 2. Drive forward 24 inches
             encoderDrive(0.4, 24, 24, 3.0);
+            sleep(2000);
+
+            shootingSystem.setPower(1.0);
+            sleep(2000);
             // Add your real path here.
-            //sleep(10000);
+            ballPusherMotor.runForward();
+            sleep(10000);
         }
 
         // When opmode ends, we'll drop out of runOpMode()
@@ -105,8 +119,8 @@ public class QualRedFrontAuton extends LinearOpMode {
      * Starts the shooter motor and ball pusher with specified power and velocity.
      */
     public void startShooter(double launcherPower, double ballPusherVelocity) {
-        launcherMotor.setPower(launcherPower);
-        ballPusherMotor.setVelocity(ballPusherVelocity);
+        shootingSystem.setPower(launcherPower);
+        ballPusherMotor.runForward(ballPusherVelocity);
         bShooterRunning = true;
     }
 
@@ -116,23 +130,23 @@ public class QualRedFrontAuton extends LinearOpMode {
      */
     public void shootPowerCore(double launcherPower, boolean unused, double ballPusherVelocity) {
         if (!bShooterRunning) {
-            launcherMotor.setPower(launcherPower);
-            ballPusherMotor.setVelocity(ballPusherVelocity);
+            shootingSystem.setPower(launcherPower);
+            ballPusherMotor.runForward(ballPusherVelocity);
             sleep(INITIAL_SPIN_UP_TIME);
             bShooterRunning = true;
         }
 
         // Fire 4 rings/balls
         for (int i = 0; i < 4 && opModeIsActive(); i++) {
-            stopperServo.setPosition(STOPPER_OPEN);
+            //stopperServo.setPosition(STOPPER_OPEN);
             sleep(GATE_DOWN_TIME);
 
-            stopperServo.setPosition(STOPPER_CLOSED);
+            //stopperServo.setPosition(STOPPER_CLOSED);
             sleep(GATE_UP_TIME);
         }
 
-        launcherMotor.setPower(0);
-        ballPusherMotor.setVelocity(0);
+        shootingSystem.setPower(0);
+        ballPusherMotor.stop();
         bShooterRunning = false;
     }
 
@@ -140,16 +154,16 @@ public class QualRedFrontAuton extends LinearOpMode {
      * Turns on the intake system by setting the intake and ball pusher motor velocities.
      */
     public void turnOnIntake(double intakeVelocity, double ballPusherVelocity) {
-        intakeMotor.setVelocity(intakeVelocity);
-        ballPusherMotor.setVelocity(ballPusherVelocity);
+        intakeSystem.start();
+        ballPusherMotor.runForward(ballPusherVelocity);
     }
 
     /**
      * Turns off the intake and ball pusher motors.
      */
     public void turnOffIntake() {
-        intakeMotor.setVelocity(0);
-        ballPusherMotor.setVelocity(0);
+        intakeSystem.stop();
+        ballPusherMotor.stop();
     }
 
     /**
@@ -170,6 +184,7 @@ public class QualRedFrontAuton extends LinearOpMode {
         rightFront.setPower(0);
         leftBack.setPower(0);
         rightBack.setPower(0);
+        intakeSystem.stop();
     }
 
     /**
@@ -255,16 +270,5 @@ public class QualRedFrontAuton extends LinearOpMode {
 
         stopAllMotors();
         setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    /**
-     * Calculates and returns the launcher motor's RPM using encoder velocity.
-     */
-    public double getLauncherRpm() {
-        if (launcherMotor instanceof DcMotorEx) {
-            double ticksPerSecond = ((DcMotorEx) launcherMotor).getVelocity();
-            return (ticksPerSecond * 60) / LAUNCHER_MOTOR_TICKS_PER_REV;
-        }
-        return 0;
     }
 }
