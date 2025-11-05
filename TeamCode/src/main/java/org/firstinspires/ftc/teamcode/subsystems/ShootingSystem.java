@@ -63,9 +63,9 @@
         }
 
         // Power levels for different shooting states
-        private static final double LOW_THRESHOLD = 0.25;      // Low power shoot
-        private static final double MID_POWER = 0.57;      // Medium power shoot
-        private static final double HIGH_POWER = 0.70;     // High power shoot
+        private static final double LOW_THRESHOLD = 0.40;      // Low power shoot
+        private static final double MID_POWER = 0.60;      // Medium power shoot
+        private static final double HIGH_POWER = 0.90;     // High power shoot
         private static final double STOP_POWER = 0.0;     // Motors off
 
         private static final double SHOOTING_PWR_INCREMENT = 0.05;

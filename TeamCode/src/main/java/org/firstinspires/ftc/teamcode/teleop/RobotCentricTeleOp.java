@@ -21,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 // These come from the NextFTC library
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.core.subsystems.Subsystem;
@@ -100,10 +101,15 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         /* 🎮 GAMEPAD 2 CONTROLS (the second controller) */
 
         // X button → turn shooter on/off
-        Gamepads.gamepad2().x().whenBecomesTrue(shootingSystem.startStop);
+        Gamepads.gamepad2().x().whenBecomesTrue(
+                new SequentialGroup(
+                        shootingSystem.startStop,
+                        shootingDirectionServo.PositionForFirstIntersection
+                )
+        );
 
         // Y button → aim the shooter down
-        Gamepads.gamepad2().y().whenBecomesTrue(shootingDirectionServo.downShootingServo);
+        Gamepads.gamepad2().y().whenBecomesTrue(shootingSystem.toggleShootingPower);
 
         // Left bumper → lower shooter power
         Gamepads.gamepad2().leftBumper().whenBecomesTrue(shootingSystem.decreaseShootingPower);

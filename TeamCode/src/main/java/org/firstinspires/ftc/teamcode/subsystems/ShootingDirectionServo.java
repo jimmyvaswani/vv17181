@@ -55,9 +55,10 @@ public class ShootingDirectionServo implements Subsystem {
     // The limits of how far the servo can move
     private final double minPos = 1.0; // Highest position
     private final double maxPos = 0.8; // Lowest position
+    private final double positionForClosePoint = 0.96; // Servoce position angled for the closer shooting point
 
     // How much the servo moves each time you press a button
-    private static final double SERVO_POS_INCREMENT = 0.05;
+    private static final double SERVO_POS_INCREMENT = 0.02;
 
     public void setPosition(double clampedPosition) {
         servo.setPosition(clampedPosition);
@@ -84,6 +85,14 @@ public class ShootingDirectionServo implements Subsystem {
             // Decreases servo position but doesn’t go below its limit
             double clampedPosition = Math.max(maxPos, servo.getPosition() - SERVO_POS_INCREMENT);
             servo.setPosition(clampedPosition);
+        }
+    }).requires(this);
+
+    public Command PositionForFirstIntersection = new InstantCommand(() -> {
+        if (servo != null) {
+            // Decreases servo position but doesn’t go below its limit
+            //double clampedPosition = Math.max(maxPos, servo.getPosition() - SERVO_POS_INCREMENT);
+            servo.setPosition(positionForClosePoint);
         }
     }).requires(this);
 
