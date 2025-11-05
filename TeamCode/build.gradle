@@ -29,8 +29,8 @@ android {
 dependencies {
     implementation project(':FtcRobotController')
     /*Added below code on 10/09/2025 based on https://nextftc.dev/guide/installation*/
-    implementation 'dev.nextftc:ftc:1.0.0'
-    implementation 'dev.nextftc:hardware:1.0.0' // If you would like to use the hardware module
+    implementation 'dev.nextftc:ftc:1.0.1'
+    implementation 'dev.nextftc:hardware:1.0.1' // If you would like to use the hardware module
 
     implementation 'dev.nextftc.extensions:pedro:1.0.0'
 }

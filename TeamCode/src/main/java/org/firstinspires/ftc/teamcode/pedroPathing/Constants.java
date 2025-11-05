@@ -21,14 +21,15 @@ public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(10.57)
             .forwardZeroPowerAcceleration(-28.28)
-            .lateralZeroPowerAcceleration(-67.37)
-            .useSecondaryTranslationalPIDF(false)
+            .lateralZeroPowerAcceleration(-67.37);
+/*            .useSecondaryTranslationalPIDF(false)
             .useSecondaryHeadingPIDF(false)
             .useSecondaryDrivePIDF(false)
             .centripetalScaling(0.0009)
             .translationalPIDFCoefficients(new PIDFCoefficients(0.2, 0, 0.01, 0.015))
             .headingPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0.01))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025, 0, 0.0001, 0.2, 0.01));
+*/
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .leftFrontMotorName(LEFT_FRONT_MOTOR_NAME)
@@ -39,12 +40,14 @@ public class Constants {
             .leftRearMotorDirection(LEFT_REAR_MOTOR_DIRECTION)
             .rightFrontMotorDirection(RIGHT_FRONT_MOTOR_DIRECTION)
             .rightRearMotorDirection(RIGHT_REAR_MOTOR_DIRECTION)
-            .xVelocity(69.6)
-            .yVelocity(51.9894);
+
+
+            .xVelocity(72.6974)  //Forward velocity
+            .yVelocity(61.7444); //Strafe Velocity
 
     public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
-            .forwardPodY(-.5)
-            .strafePodX(-.5)
+            .forwardPodY(-5.51181)
+            .strafePodX(-5.19685)
             .forwardEncoder_HardwareMapName(RIGHT_FRONT_MOTOR_NAME)
             .strafeEncoder_HardwareMapName(LEFT_FRONT_MOTOR_NAME)
             //.strafeEncoderDirection(Encoder.REVERSE) //comment out
