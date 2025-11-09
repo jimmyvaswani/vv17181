@@ -63,9 +63,8 @@
         }
 
         // Power levels for different shooting states
-        private static final double LOW_THRESHOLD = 0.40;      // Low power shoot
-        private static final double MID_POWER = 0.60;      // Medium power shoot
-        private static final double HIGH_POWER = 0.90;     // High power shoot
+        private static final double LOW_THRESHOLD = 0.30;      // Low power shoot
+        private static final double HIGH_SHOOTING_POWER = 0.99;     // High power shoot
         private static final double STOP_POWER = 0.0;     // Motors off
 
         private static final double SHOOTING_PWR_INCREMENT = 0.05;
@@ -81,41 +80,27 @@
         }).requires(this);
 
         // Command to start the shooting motors at low power
-        public Command startStop = new InstantCommand(() -> {
-            if(shootingMotor1.getPower()<=0.10) {
-                shootingMotor1.setPower(MID_POWER);
-                shootingMotor2.setPower(MID_POWER);
-                //telemetry.addData("Shooting Mode", "MEDIUM");
-            } else {
-                shootingMotor1.setPower(STOP_POWER);
-                shootingMotor2.setPower(STOP_POWER);
-                //telemetry.addData("Shooting Mode", "STOP");
-            }
-            //telemetry.update();
-        }).requires(this);
-
-        // Command to start the shooting motors at medium power
-        //public Command startMid = new InstantCommand(() -> shooterMotors.setPower(MID_POWER)).requires(this);
-        // Sample code for command when you want to execute multiple lines of code for that command.
-        public Command toggleShootingPower = new InstantCommand(() -> {
-            if(shootingMotor1.getPower()<=0.10 || shootingMotor1.getPower()>=HIGH_POWER) {
-                shootingMotor1.setPower(MID_POWER);
-                shootingMotor2.setPower(MID_POWER);
-                //telemetry.addData("Shooting Mode", "MEDIUM");
-            } else {
-                shootingMotor1.setPower(HIGH_POWER);
-                shootingMotor2.setPower(HIGH_POWER);
-                //telemetry.addData("Shooting Mode", "HIGH");
-            }
-            //telemetry.update();
-        }).requires(this);
+        public Command startStop(double shootingPower) {
+            return new InstantCommand(() -> {
+                if (shootingMotor1.getPower() <= 0.10) {
+                    shootingMotor1.setPower(shootingPower);
+                    shootingMotor2.setPower(shootingPower);
+                    //telemetry.addData("Shooting Mode", "THIRST");
+                } else {
+                    shootingMotor1.setPower(STOP_POWER);
+                    shootingMotor2.setPower(STOP_POWER);
+                    //telemetry.addData("Shooting Mode", "STOP");
+                }
+                //telemetry.update();
+            }).requires(this);
+        }
 
         // Command to start the shooting motors at high power
         public Command increaseShootingPower = new InstantCommand(() -> {
             double newShootingPower = shootingMotor1.getPower() + SHOOTING_PWR_INCREMENT;
-            if (newShootingPower >= HIGH_POWER) {
-                shootingMotor1.setPower(HIGH_POWER);
-                shootingMotor2.setPower(HIGH_POWER);
+            if (newShootingPower >= HIGH_SHOOTING_POWER) {
+                shootingMotor1.setPower(HIGH_SHOOTING_POWER);
+                shootingMotor2.setPower(HIGH_SHOOTING_POWER);
                 //telemetry.addData("Shooting Mode", "HIGH");
             } else {
                 shootingMotor1.setPower(newShootingPower);

@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
+import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.impl.CRServoEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -112,6 +114,21 @@ public class BallLoadingServo implements Subsystem {
         return setContinuousPower(0.0);
     }
 
+    /**
+     * Command to rotate servo for 2 revolutions in specified direction.
+     * Assumes approx. 1 revolution per second at full power.
+     */
+    public Command REVERSEANDSTOP() {
+        //double actualPower = Math.abs(power) * Math.signum(direction);
+        double actualPower = Math.abs(-0.5);
+        double durationSeconds = 1.0; // assuming 1 revolution per second
+
+        return new SequentialGroup(
+                setContinuousPower(actualPower),
+                new Delay(durationSeconds),
+                stopContinuous()
+        );
+    }
     /**
      * Quick stop command that stops it immediately.
      */

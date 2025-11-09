@@ -21,15 +21,17 @@ public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(10.57)
             .forwardZeroPowerAcceleration(-28.28)
-            .lateralZeroPowerAcceleration(-67.37);
-/*            .useSecondaryTranslationalPIDF(false)
+            .lateralZeroPowerAcceleration(-67.37)
+
+            // Keeping original values as is.
+            .useSecondaryTranslationalPIDF(false)
             .useSecondaryHeadingPIDF(false)
             .useSecondaryDrivePIDF(false)
             .centripetalScaling(0.0009)
             .translationalPIDFCoefficients(new PIDFCoefficients(0.2, 0, 0.01, 0.015))
             .headingPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0.01))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025, 0, 0.0001, 0.2, 0.01));
-*/
+
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .leftFrontMotorName(LEFT_FRONT_MOTOR_NAME)
