@@ -103,7 +103,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
                 backRightMotor,
                 Gamepads.gamepad1().leftStickY().map(y -> y * -1.0 * STRAFE_SPEED_MULTIPLIER),
                 //Gamepads.gamepad1().leftStickX(),  // strafe left/right
-                Gamepads.gamepad1().leftStickX().map(x -> x * -1.0 * STRAFE_SPEED_MULTIPLIER),
+                Gamepads.gamepad1().leftStickX().map(x -> x * 1.0 * STRAFE_SPEED_MULTIPLIER),
                 Gamepads.gamepad1().rightStickX().map(x -> x * 1.0 * STRAFE_SPEED_MULTIPLIER)
                 );
 
