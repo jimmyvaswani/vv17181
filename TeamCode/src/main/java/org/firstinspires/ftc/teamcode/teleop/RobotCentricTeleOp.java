@@ -46,15 +46,15 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     private Intake intakeSystem;
     private Light light;
 
-    private final double POSITION_CLOSEST = 0.96; // Shooting Direction Servo position angled for the closer shooting point
-    private final double POSITION_SECOND = 0.96; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_CLOSEST = 0.88; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_SECOND = 0.92; // Shooting Direction Servo position angled for the closer shooting point
     private final double POSITION_THIRD = 0.96; // Shooting Direction Servo position angled for the closer shooting point
     private final double POSITION_FOURTH = 0.96; // Shooting Direction Servo position angled for the closer shooting point
 
-    private static final double FIRST_SHOOTING_POWER = 0.30;      // Low power shoot
-    private static final double SECOND_SHOOTING_POWER = 0.35;      // Low power shoot
-    private static final double THIRD_SHOOTING_POWER = 0.40;      // Medium power shoot
-    private static final double FOURTH_SHOOTING_POWER = 0.70;      // Medium power shoot
+    private static final double FIRST_SHOOTING_POWER = 0.40;      // Low power shoot
+    private static final double SECOND_SHOOTING_POWER = 0.50;      // Low power shoot
+    private static final double THIRD_SHOOTING_POWER = 0.60;      // Medium power shoot
+    private static final double FOURTH_SHOOTING_POWER = 0.75;      // Medium power shoot
 
 
     protected final IMUEx imu = new IMUEx("imu", Direction.DOWN, Direction.FORWARD).zeroed();
