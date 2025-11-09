@@ -23,7 +23,7 @@ dependencies {
     //implementation 'dev.nextftc.core.commands:1.0.0'
 //    implementation 'com.pedropathing:ftc:2.0.0'
 //    implementation 'com.pedropathing:telemetry:0.0.6'
-    implementation 'com.bylazar:fullpanels:1.0.7'
+    implementation 'com.bylazar:fullpanels:1.0.9'
 
     implementation 'com.pedropathing:ftc:2.0.3'
     implementation 'com.pedropathing:telemetry:1.0.0'
