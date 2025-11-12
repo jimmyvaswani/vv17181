@@ -95,6 +95,15 @@
             }).requires(this);
         }
 
+        public Command start(double shootingPower) {
+            return new InstantCommand(() -> {
+                shootingMotor1.setPower(shootingPower);
+                shootingMotor2.setPower(shootingPower);
+                //telemetry.addData("Shooting Mode", "THIRST");
+                //telemetry.update();
+            }).requires(this);
+        }
+
         // Command to start the shooting motors at high power
         public Command increaseShootingPower = new InstantCommand(() -> {
             double newShootingPower = shootingMotor1.getPower() + SHOOTING_PWR_INCREMENT;
@@ -130,7 +139,7 @@
         }
 
         // Command to stop the shooting motors
-    //    public Command stop = new InstantCommand(() -> shooterMotors.setPower(STOP_POWER)).requires(this);
+        public Command stop = new InstantCommand(() -> setPower(STOP_POWER)).requires(this);
 
         /**
          * The periodic method is called repeatedly while the robot is running.

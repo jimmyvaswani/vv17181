@@ -46,7 +46,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     private Intake intakeSystem;
     private Light light;
 
-    private final double POSITION_CLOSEST = 0.88; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_CLOSEST = 0.86; // Shooting Direction Servo position angled for the closer shooting point
     private final double POSITION_SECOND = 0.92; // Shooting Direction Servo position angled for the closer shooting point
     private final double POSITION_THIRD = 0.96; // Shooting Direction Servo position angled for the closer shooting point
     private final double POSITION_FOURTH = 0.96; // Shooting Direction Servo position angled for the closer shooting point
@@ -117,7 +117,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
                 new SequentialGroup(
                         intakeSystem.reverse,
                         ballLoadingServo.runForward(),
-                        new Delay(1.0), //Duration in seconds
+                        new Delay(0.25), //Running the reverse operation only for 1/4 of a seconds
                         ballLoadingServo.stopContinuous(),
                         intakeSystem.STOP
                 )
@@ -129,26 +129,42 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         // Intake System Controls on Gamepad 2 as before
         Gamepads.gamepad2().a().whenBecomesTrue(
                 new SequentialGroup(
-                        shootingSystem.startStop(FIRST_SHOOTING_POWER),
-                        shootingDirectionServo.PositionForSpecificDistance(POSITION_CLOSEST)
+                        shootingSystem.start(FIRST_SHOOTING_POWER),
+                        shootingDirectionServo.PositionForSpecificDistance(POSITION_CLOSEST),
+                        ballLoadingServo.runBackward(),
+                        intakeSystem.START,
+                        new Delay(5.0), //Running the systems for 5 seconds
+                        shootingSystem.stopAllSubsystems
                 )
         );
         Gamepads.gamepad2().b().whenBecomesTrue(
                 new SequentialGroup(
-                        shootingSystem.startStop(SECOND_SHOOTING_POWER),
-                        shootingDirectionServo.PositionForSpecificDistance(POSITION_SECOND)
+                        shootingSystem.start(SECOND_SHOOTING_POWER),
+                        shootingDirectionServo.PositionForSpecificDistance(POSITION_SECOND),
+                        ballLoadingServo.runBackward(),
+                        intakeSystem.START,
+                        new Delay(5.0), //Running the systems for 5 seconds
+                        shootingSystem.stopAllSubsystems
                 )
         );
         Gamepads.gamepad2().x().whenBecomesTrue(
                 new SequentialGroup(
-                        shootingSystem.startStop(THIRD_SHOOTING_POWER),
-                        shootingDirectionServo.PositionForSpecificDistance(POSITION_THIRD)
+                        shootingSystem.start(THIRD_SHOOTING_POWER),
+                        shootingDirectionServo.PositionForSpecificDistance(POSITION_THIRD),
+                        ballLoadingServo.runBackward(),
+                        intakeSystem.START,
+                        new Delay(5.0), //Running the systems for 5 seconds
+                        shootingSystem.stopAllSubsystems
                 )
         );
         Gamepads.gamepad2().y().whenBecomesTrue(
                 new SequentialGroup(
-                        shootingSystem.startStop(FOURTH_SHOOTING_POWER),
-                        shootingDirectionServo.PositionForSpecificDistance(POSITION_FOURTH)
+                        shootingSystem.start(FOURTH_SHOOTING_POWER),
+                        shootingDirectionServo.PositionForSpecificDistance(POSITION_FOURTH),
+                        ballLoadingServo.runBackward(),
+                        intakeSystem.START,
+                        new Delay(5.0), //Running the systems for 5 seconds
+                        shootingSystem.stopAllSubsystems
                 )
         );
 
@@ -159,10 +175,10 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().back().whenBecomesTrue(shootingSystem.stopAllSubsystems);
 
         // D-Pad Left → run the ball loading servo backward (to load balls)
-        Gamepads.gamepad2().dpadLeft().whenBecomesTrue(ballLoadingServo.runBackward());
+        //Gamepads.gamepad2().dpadLeft().whenBecomesTrue(ballLoadingServo.runBackward());
 
         // D-Pad Right → stop the ball loading servo
-        Gamepads.gamepad2().dpadRight().whenBecomesTrue(ballLoadingServo.stopContinuous());
+        //Gamepads.gamepad2().dpadRight().whenBecomesTrue(ballLoadingServo.stopContinuous());
         //Gamepads.gamepad2().dpadRight().whenBecomesTrue(ballLoadingServo.REVERSEANDSTOP());
 //New Update
         // D-Pad Up → aim the shooter down
