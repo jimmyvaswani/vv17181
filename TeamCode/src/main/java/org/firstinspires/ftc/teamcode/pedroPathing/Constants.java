@@ -33,6 +33,15 @@ public class Constants {
             //.drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025, 0, 0.0001, 0.2, 0.01));
 
 
+    /* Recommended values for the heavier, lower-accelerating robot, values pulled from google AI
+        .useSecondaryTranslationalPIDF(false)
+        .useSecondaryHeadingPIDF(false)
+        .useSecondaryDrivePIDF(false)
+        .centripetalScaling(0.001) // Slight increase for stability
+        .translationalPIDFCoefficients(new PIDFCoefficients(0.35, 0, 0.02, 0.02)) // Increased Kp for responsiveness
+        .headingPIDFCoefficients(new PIDFCoefficients(1.3, 0, 0.05, 0.03)) // Using the well-tuned values from File 1
+        .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025, 0, 0.0001, 0.8, 0.01)); // Increased Kf (0.8) for higher speed target
+*/
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
             .leftFrontMotorName(LEFT_FRONT_MOTOR_NAME)
