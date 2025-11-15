@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Auton;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
@@ -16,7 +17,6 @@ import org.firstinspires.ftc.teamcode.subsystems.BallLoadingServo;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
-import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.FollowPath;
@@ -24,7 +24,7 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous(name = "Red - Front Zone - Reload NEW", group = "experimental")
+@Autonomous(name = "Red - Front Zone - Reload NEW", group = "AUTON")
 public class RedFrontReload extends NextFTCOpMode {
     // --- Subsystem Instances (Initialized in onInit)
     private Intake intake;
@@ -33,15 +33,21 @@ public class RedFrontReload extends NextFTCOpMode {
     private BallLoadingServo ballLoader;
 
     // --- Pose Definitions (Coordinates for autonomous movement)
-    private final Pose startPose = new Pose(114, 136, Math.toRadians(270));
-    private final Pose scorePose = new Pose(85, 80, Math.toRadians(225));
-    private final Pose endPose = new Pose(96, 48, Math.toRadians(180));
+    private final Pose detourPose = new Pose(70, 100, Math.toRadians(0));
+    private final Pose detourPose2 = new Pose(80, 70, Math.toRadians(215));
+    private final Pose startPose = new Pose(135, 120, Math.toRadians(220));
+    private final Pose scorePose = new Pose(110, 110, Math.toRadians(200));
+
+
+    private final Pose endPose = new Pose(109, 78, Math.toRadians(0));
 
     // Assumed pick-up locations (using similar logic to original)
-    private static final Pose pickUpOneStage = new Pose(85, 98, Math.toRadians(0));
-    private static final Pose pickUpOne = new Pose(110, 98, Math.toRadians(0));
-    private static final Pose pickUpTwoStage = new Pose(85, 74, Math.toRadians(0));
-    private static final Pose pickUpTwo = new Pose(110, 74, Math.toRadians(0));
+    private static final Pose pickUpOneStage = new Pose(105, 100, Math.toRadians(1));
+    private static final Pose pickUpOne = new Pose(135, 100, Math.toRadians(1));
+    private static final Pose pickUpTwoStage = new Pose(105, 78, Math.toRadians(1));
+    private static final Pose pickUpTwo = new Pose(133, 78, Math.toRadians(1));
+    private static final Pose pickUpThreeStage = new Pose(105, 58, Math.toRadians(1));
+    private static final Pose pickUpThree = new Pose(133, 58, Math.toRadians(1));
 
     private TelemetryManager panelsTelemetry;
 
@@ -53,7 +59,7 @@ public class RedFrontReload extends NextFTCOpMode {
     private PathChain moveToPickUpTwo;
     private PathChain doPickUpTwo;
     private PathChain scorePickUpTwo;
-    private PathChain leave;
+    private PathChain leave, detourOne, detourTwo, detourThree, detourFour;
 
     // --- Autonomous Routine Parameters
     private static final double SHOOTING_POWER = 0.99; // Using HIGH_SHOOTING_POWER from ShootingSystem
@@ -85,40 +91,61 @@ public class RedFrontReload extends NextFTCOpMode {
 
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         // Set an initial position for the shooting direction servo (assuming 0.85 is a safe starting position)
-        shootingDirection.setPosition(0.85);
+        shootingDirection.setPosition(0.86);
     }
 
+    private static final double POSITION_A = 0.88;          // Shooting Direction Servo position angled for the second shooting point
+    private static final double SHOOTING_POWER_A = 0.48;    // Low power shoot
     private Command autonomousRoutine() {
         return new SequentialGroup(
-                // 1. Initial Setup: Start shooter and set aiming angle
-                new ParallelGroup(
+                // 1. Initial Setup: Start robot with three pre-loaded balls
+                /*new ParallelGroup(
                         shooter.start(SHOOTING_POWER), // Start shooter spin-up
                         shootingDirection.PositionForSpecificDistance(0.85) // Set angle for preload shot
-                ),
-
+                ),*/
                 // 2. Move to Scoring Position
-                new FollowPath(scorePreload, true, 0.5),
-
+                new FollowPath(scorePreload, true, 1.0),
                 // 3. Score Preload
-                new SequentialGroup(
-                        new Delay(WARMUP_TIME), // Wait for shooter to spin up
-                        ballLoader.runForward(LOADER_POWER), // Load the ball into the shooter
-                        new Delay(0.5), // Scoring delay
-                        ballLoader.stopContinuous() // Stop the loader
-                ),
+                runShootingRoutine(),
 
                 // --- Reload Sequence 1 ---
 
                 // 4. Move to Pick Up 1 (Parallel: Stop shooter, start intake, move)
-                new ParallelGroup(
-                        shooter.stop, // Stop the shooter
-                        intake.START, // Start the intake motor (Gate logic is missing/internal)
-                        new FollowPath(moveToPickUpOne, false, 1.00)
-                ),
-
+                /*new ParallelGroup(
+                        //shooter.stop, // Stop the shooter
+                        new FollowPath(moveToPickUpOne, false, 1.00),
+                        intake.START // Start the intake motor (Gate logic is missing/internal)
+                ),*/
+                //new Delay(1.0), // Scoring delay
+                new FollowPath(detourOne, true, 0.60),
+                //new Delay(1.0), // Scoring delay
+                new FollowPath(moveToPickUpOne, true, 0.60),
                 // 5. Execute Pick Up 1
-                new FollowPath(doPickUpOne, true, 1.00),
-                intake.STOP, // Stop the intake motor (assuming item is picked up)
+                new Delay(0.5), // Scoring delay
+                Intake.getInstance().START,
+                new FollowPath(doPickUpOne, true, 0.40),
+                Intake.getInstance().STOP, // Stop the intake motor (assuming item is picked up)
+
+                // 3. Score First Auto Load
+                new FollowPath(detourTwo, true, 0.60),
+                new FollowPath(scorePickUpOne, true, 0.60),
+                runShootingRoutine()
+
+/*
+                //new Delay(1.0), // Scoring delay
+                new FollowPath(detourThree, true, 0.75),
+                //new Delay(1.0), // Scoring delay
+                new FollowPath(moveToPickUpTwo, true, 0.60),
+                // 5. Execute Pick Up 1
+                new Delay(0.5), // Scoring delay
+                Intake.getInstance().START,
+                new FollowPath(doPickUpTwo, true, 0.50),
+                Intake.getInstance().STOP, // Stop the intake motor (assuming item is picked up)
+
+                // 3. Score First Auto Load
+                new FollowPath(detourFour, true, 0.75),
+                new FollowPath(scorePickUpTwo, true, 0.75),
+                runShootingRoutine()
 
                 // 6. Score Pick Up 1 (Parallel: Start shooter, move back to score pose)
                 new ParallelGroup(
@@ -166,7 +193,19 @@ public class RedFrontReload extends NextFTCOpMode {
                         shooter.stop,
                         new FollowPath(leave, true, 1.00)
                 )
+*/
+        );
+    }
 
+    private Command runShootingRoutine() {
+        return new SequentialGroup(
+                shooter.start(SHOOTING_POWER_A),
+                new Delay(0.5), //For shooting motor to get to the right speed
+                shootingDirection.PositionForSpecificDistance(POSITION_A),
+                ballLoader.runBackward(),
+                intake.START,
+                new Delay(4.0), //Running the systems for 4 seconds, enough time for all three balls to shoot.
+                shooter.stopAllSubsystems
         );
     }
 
@@ -184,34 +223,53 @@ public class RedFrontReload extends NextFTCOpMode {
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
 
         // Path from Score to PickUp 1 Staging
+        detourOne = PedroComponent.follower().pathBuilder()
+                .addPath(new BezierCurve(scorePose, detourPose) )
+                .setLinearHeadingInterpolation(scorePose.getHeading(), detourPose.getHeading()).build();
+
+        // Path from Score to PickUp 1 Staging
         moveToPickUpOne = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, pickUpOneStage))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), pickUpOneStage.getHeading()).build();
+                .addPath(new BezierCurve(detourPose, pickUpOneStage) )
+                .setLinearHeadingInterpolation(detourPose.getHeading(), pickUpOneStage.getHeading()).build();
 
         // Path from PickUp 1 Staging to PickUp 1
         doPickUpOne = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(pickUpOneStage, pickUpOne))
                 .setLinearHeadingInterpolation(pickUpOneStage.getHeading(), pickUpOne.getHeading()).build();
 
+        // Path from Score to PickUp 1 Staging
+        detourTwo = PedroComponent.follower().pathBuilder()
+                .addPath(new BezierCurve(pickUpOne, detourPose2) )
+                .setLinearHeadingInterpolation(pickUpOne.getHeading(), detourPose2.getHeading()).build();
+
         // Path from PickUp 1 back to Score
         scorePickUpOne = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(pickUpOne, scorePose))
-                .setLinearHeadingInterpolation(pickUpOne.getHeading(), scorePose.getHeading()).build();
+                .addPath(new BezierCurve(detourPose2, scorePose))
+                .setLinearHeadingInterpolation(detourPose2.getHeading(), scorePose.getHeading()).build();
+
+        // Path from Score to PickUp 1 Staging
+        detourThree = PedroComponent.follower().pathBuilder()
+                .addPath(new BezierCurve(scorePose, detourPose) )
+                .setLinearHeadingInterpolation(scorePose.getHeading(), detourPose.getHeading()).build();
 
         // Path from Score to PickUp 2 Staging
         moveToPickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, pickUpTwoStage))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), pickUpTwoStage.getHeading()).build();
+                .addPath(new BezierCurve(detourPose, pickUpTwoStage))
+                .setLinearHeadingInterpolation(detourPose.getHeading(), pickUpTwoStage.getHeading()).build();
 
         // Path from PickUp 2 Staging to PickUp 2
         doPickUpTwo = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(pickUpTwoStage, pickUpTwo))
                 .setLinearHeadingInterpolation(pickUpTwoStage.getHeading(), pickUpTwo.getHeading()).build();
 
+        detourFour = PedroComponent.follower().pathBuilder()
+                .addPath(new BezierCurve(pickUpTwo, detourPose2) )
+                .setLinearHeadingInterpolation(pickUpTwo.getHeading(), detourPose2.getHeading()).build();
+
         // Path from PickUp 2 back to Score
         scorePickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(pickUpTwo, scorePose))
-                .setLinearHeadingInterpolation(pickUpTwo.getHeading(), scorePose.getHeading()).build();
+                .addPath(new BezierLine(detourPose2, scorePose))
+                .setLinearHeadingInterpolation(detourPose2.getHeading(), scorePose.getHeading()).build();
 
         // Path from Score to End/Park
         leave = PedroComponent.follower().pathBuilder()

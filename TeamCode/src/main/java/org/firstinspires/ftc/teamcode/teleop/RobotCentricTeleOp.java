@@ -130,6 +130,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().a().whenBecomesTrue(
                 new SequentialGroup(
                         shootingSystem.start(FIRST_SHOOTING_POWER),
+                        new Delay(0.5), //For shooting motor to get to the right speed
                         shootingDirectionServo.PositionForSpecificDistance(POSITION_CLOSEST),
                         ballLoadingServo.runBackward(),
                         intakeSystem.START,
@@ -140,6 +141,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().b().whenBecomesTrue(
                 new SequentialGroup(
                         shootingSystem.start(SECOND_SHOOTING_POWER),
+                        new Delay(0.5), //For shooting motor to get to the right speed
                         shootingDirectionServo.PositionForSpecificDistance(POSITION_SECOND),
                         ballLoadingServo.runBackward(),
                         intakeSystem.START,
@@ -150,6 +152,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().x().whenBecomesTrue(
                 new SequentialGroup(
                         shootingSystem.start(THIRD_SHOOTING_POWER),
+                        new Delay(0.5), //For shooting motor to get to the right speed
                         shootingDirectionServo.PositionForSpecificDistance(POSITION_THIRD),
                         ballLoadingServo.runBackward(),
                         intakeSystem.START,
@@ -160,6 +163,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().y().whenBecomesTrue(
                 new SequentialGroup(
                         shootingSystem.start(FOURTH_SHOOTING_POWER),
+                        new Delay(0.5), //For shooting motor to get to the right speed
                         shootingDirectionServo.PositionForSpecificDistance(POSITION_FOURTH),
                         ballLoadingServo.runBackward(),
                         intakeSystem.START,

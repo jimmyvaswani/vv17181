@@ -21,16 +21,16 @@ public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(10.57)
             .forwardZeroPowerAcceleration(-26.66)
-            .lateralZeroPowerAcceleration(-58.35);
+            .lateralZeroPowerAcceleration(-58.35)
 
             // Keeping original values as is.
-            //.useSecondaryTranslationalPIDF(false)
-            //.useSecondaryHeadingPIDF(false)
-            //.useSecondaryDrivePIDF(false)
-            //.centripetalScaling(0.0009)
-            //.translationalPIDFCoefficients(new PIDFCoefficients(0.2, 0, 0.01, 0.015))
-            //.headingPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0.01))
-            //.drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025, 0, 0.0001, 0.2, 0.01));
+            .useSecondaryTranslationalPIDF(false)
+            .useSecondaryHeadingPIDF(false)
+            .useSecondaryDrivePIDF(false)
+            .centripetalScaling(0.0009)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.2, 0, 0.01, 0.015))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0.01))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025, 0, 0.0001, 0.2, 0.01));
 
 
     /* Recommended values for the heavier, lower-accelerating robot, values pulled from google AI
