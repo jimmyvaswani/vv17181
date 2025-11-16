@@ -35,13 +35,13 @@ public class BlueFrontReload extends NextFTCOpMode {
     // --- Pose Definitions (Coordinates for autonomous movement)
     private final Pose detourPose = new Pose(900, 100, Math.toRadians(0));
     private final Pose detourPose2 = new Pose(100, 70, Math.toRadians(215));
-    private final Pose startPose = new Pose(20, 120, Math.toRadians(140));
+    private final Pose startPose = new Pose(20, 120, Math.toRadians(310));
     private final Pose scorePose = new Pose(50, 110, Math.toRadians(120));
 
 
     // Assumed pick-up locations (using similar logic to original)
-    private static final Pose pickUpOneStage = new Pose(50, 100, Math.toRadians(1));
-    private static final Pose pickUpOne = new Pose(25, 100, Math.toRadians(1));
+    private static final Pose pickUpOneStage = new Pose(50, 100, Math.toRadians(181));
+    private static final Pose pickUpOne = new Pose(25, 100, Math.toRadians(181));
     private static final Pose pickUpTwoStage = new Pose(50, 78, Math.toRadians(1));
     private static final Pose pickUpTwo = new Pose(25, 78, Math.toRadians(1));
 
