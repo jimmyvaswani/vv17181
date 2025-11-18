@@ -19,8 +19,10 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.core.units.Angle;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
+import dev.nextftc.extensions.pedro.TurnBy;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
@@ -33,17 +35,19 @@ public class BlueFrontReload extends NextFTCOpMode {
     private BallLoadingServo ballLoader;
 
     // --- Pose Definitions (Coordinates for autonomous movement)
-    private final Pose detourPose = new Pose(900, 100, Math.toRadians(0));
-    private final Pose detourPose2 = new Pose(100, 70, Math.toRadians(215));
+    private final Pose detourPose = new Pose(90, 70, Math.toRadians(181));
+    private final Pose detourPose2 = new Pose(100, 70, Math.toRadians(181));
     private final Pose startPose = new Pose(20, 120, Math.toRadians(310));
-    private final Pose scorePose = new Pose(50, 110, Math.toRadians(120));
+    private final Pose scorePose = new Pose(35, 95, Math.toRadians(330));
 
 
     // Assumed pick-up locations (using similar logic to original)
-    private static final Pose pickUpOneStage = new Pose(50, 100, Math.toRadians(181));
-    private static final Pose pickUpOne = new Pose(25, 100, Math.toRadians(181));
-    private static final Pose pickUpTwoStage = new Pose(50, 78, Math.toRadians(1));
-    private static final Pose pickUpTwo = new Pose(25, 78, Math.toRadians(1));
+    private static final Pose pickUpOneStage = new Pose(50, 78, Math.toRadians(181));
+    private static final Pose pickUpOne = new Pose(25, 78, Math.toRadians(181));
+    private static final Pose pickUpTwoStage = new Pose(50, 78, Math.toRadians(181));
+    private static final Pose pickUpTwo = new Pose(25, 78, Math.toRadians(181));
+    private static final Pose pickUpThreeStage = new Pose(50, 58, Math.toRadians(181));
+    private static final Pose pickUpThree = new Pose(25, 58, Math.toRadians(181));
 
     private TelemetryManager panelsTelemetry;
 
@@ -104,7 +108,8 @@ public class BlueFrontReload extends NextFTCOpMode {
                 new FollowPath(scorePreload, true, SPEED_TO_SCORE),
                 // 2. Shoot preload
                 runShootingRoutine(),
-
+                new TurnBy(Angle.fromDeg(30))
+/*
                 // --- Reload Sequence 1 ---
 
                 // 3. Drive toward pickup 1 staging
@@ -121,7 +126,7 @@ public class BlueFrontReload extends NextFTCOpMode {
                 new FollowPath(detourTwo, true, SPEED_DETOUR),
                 new FollowPath(scorePickUpOne, true, 0.60),
 
-                runShootingRoutine()
+                runShootingRoutine() */
         );
     }
 
