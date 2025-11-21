@@ -30,7 +30,7 @@
         // Private constructor to ensure only one instance exists
         private ShootingSystem(Telemetry telemetry) {
             this.telemetry = telemetry;
-            shootingMotor2.reversed();  // Set motor2 to run in reverse
+            shootingMotor1.reversed();  // Set motor2 to run in reverse
             //shooterMotors = new MotorGroup(motor2, motor1);
         }
 
