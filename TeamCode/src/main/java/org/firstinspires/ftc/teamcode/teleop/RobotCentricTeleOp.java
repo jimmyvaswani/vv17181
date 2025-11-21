@@ -94,7 +94,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed() {
 
-        light.setPattern(Light.SOLID_GREEN_POSITION).schedule();
+        light.setPattern(Light.SOLID_PURPLE_POSITION).schedule();
         // This tells the robot how to drive using mecanum wheels (which move in all directions)
         Command driverControlled = new MecanumDriverControlled(
                 frontLeftMotor,

@@ -9,16 +9,18 @@ public class Light implements Subsystem {
     public static final Light INSTANCE = new Light();
 
     // Servo positions for the goBILDA RGB Light (approximate common values)
+    // Refer to this page for more insights on color -> value https://www.gobilda.com/rgb-indicator-light-pwm-controlled/
     // These specific values correspond to persistent, solid colors.
     public static final double OFF_POSITION = 0.5;
     public static final double SOLID_RED_POSITION = 0.7;
     public static final double SOLID_GREEN_POSITION = 0.6;
     public static final double SOLID_BLUE_POSITION = 0.8;
+    public static final double SOLID_PURPLE_POSITION = 0.70;
 
     // Renamed from 'brightness' to 'targetPosition' to reflect the hardware
     private double targetPosition = OFF_POSITION; // Default to OFF or safe state
 
-    private final ServoEx servo = new ServoEx("servo1");
+    private final ServoEx servo = new ServoEx("Light");
     private Light() { }
 
     @Override
