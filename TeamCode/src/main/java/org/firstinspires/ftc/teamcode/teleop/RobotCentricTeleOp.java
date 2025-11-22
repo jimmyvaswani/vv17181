@@ -17,15 +17,13 @@ import org.firstinspires.ftc.teamcode.subsystems.ShootingSystem;
 import org.firstinspires.ftc.teamcode.subsystems.Light;
 
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 // These come from the NextFTC library
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
-import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
@@ -46,16 +44,15 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     private Intake intakeSystem;
     private Light light;
 
-    private final double POSITION_CLOSEST = 0.44; //0.86; // Shooting Direction Servo position angled for the closer shooting point
-    private final double POSITION_SECOND = 0.50; //0.92; // Shooting Direction Servo position angled for the closer shooting point
-    private final double POSITION_THIRD = 0.54; //0.96; // Shooting Direction Servo position angled for the closer shooting point
-    private final double POSITION_FOURTH = 0.55; //0.96; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_CLOSEST = 0.36; //0.86; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_SECOND = 0.31; //0.92; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_THIRD = 0.28; //0.96; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_FOURTH = 0.25; //0.96; // Shooting Direction Servo position angled for the closer shooting point
 
-    private static final double FIRST_SHOOTING_POWER = 0.45;      // Low power shoot
-    private static final double SECOND_SHOOTING_POWER = 0.55;      // Low power shoot
-    private static final double THIRD_SHOOTING_POWER = 0.65;      // Medium power shoot
-    private static final double FOURTH_SHOOTING_POWER = 0.80;      // Medium power shoot
-
+    private static double FIRST_SHOOTING_POWER = 0.40;      // Low power shoot
+    private static double SECOND_SHOOTING_POWER = 0.45;      // Low power shoot
+    private static double THIRD_SHOOTING_POWER = 0.55;      // Medium power shoot
+    private static double FOURTH_SHOOTING_POWER = 0.65;      // Medium power shoot
 
     protected final IMUEx imu = new IMUEx("imu", Direction.DOWN, Direction.FORWARD).zeroed();
 
@@ -123,7 +120,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
                 )
         );
 
-        shootingDirectionServo.PositionForSpecificDistance(0.38).schedule();
+        shootingDirectionServo.PositionForSpecificDistance(0.50).schedule();
         // Right bumper → start/stop the Intake system
         Gamepads.gamepad2().rightBumper().whenBecomesTrue(intakeSystem.startStop);
 
@@ -187,10 +184,14 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         //Gamepads.gamepad2().dpadRight().whenBecomesTrue(ballLoadingServo.REVERSEANDSTOP());
 
         // D-Pad Up → aim the shooter up
-        Gamepads.gamepad2().dpadUp().whenBecomesTrue(shootingDirectionServo.downShootingServo);
+        Gamepads.gamepad2().dpadUp().whenBecomesTrue(shootingDirectionServo.upShootingServo);
 
         // D-Pad Down → aim the shooter down
-        Gamepads.gamepad2().dpadDown().whenBecomesTrue(shootingDirectionServo.upShootingServo);
+        Gamepads.gamepad2().dpadDown().whenBecomesTrue(shootingDirectionServo.downShootingServo);
+
+        // Additional delta to be added when motor powers run low
+        Gamepads.gamepad1().dpadRight().whenBecomesTrue(ShootingSystem.getInstance().INCREASE_DELTA);
+        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(ShootingSystem.getInstance().DECREASE_DELTA);
     }
 
 }

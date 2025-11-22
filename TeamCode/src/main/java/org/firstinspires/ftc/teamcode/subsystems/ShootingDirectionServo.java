@@ -24,8 +24,8 @@ public class ShootingDirectionServo implements Subsystem {
     // Used to show info on the Driver Station screen
     private Telemetry telemetry;
     // The limits of how far the servo can move
-    private final double minPos = 0.36; //0.96; // Lowest position
-    private final double maxPos = 0.56; //0.80; // Highest position
+    private final double minPos = 0.20; //0.36; //0.96; // Lowest position
+    private final double maxPos = 0.50; //0.56; //0.80; // Highest position
 
     // How much the servo moves each time you press a button
     private static final double SERVO_POS_INCREMENT = 0.01;

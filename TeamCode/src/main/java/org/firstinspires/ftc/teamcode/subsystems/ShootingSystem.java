@@ -5,6 +5,7 @@
     import dev.nextftc.core.subsystems.Subsystem;
     import dev.nextftc.hardware.impl.MotorEx;
     import org.firstinspires.ftc.robotcore.external.Telemetry;
+    import org.firstinspires.ftc.teamcode.teleop.RobotCentricTeleOp;
 
     /**
      * ShootingSystem Subsystem for the robot.
@@ -23,6 +24,8 @@
         // Motor instances representing the shooting motors
         private MotorEx shootingMotor1 = new MotorEx("sm1");
         private MotorEx shootingMotor2 = new MotorEx("sm2");
+
+        private static double CORRECTION_DELTA = 0.00;
 
         // Motor group with motor2 reversed
         //private MotorGroup shooterMotors;
@@ -97,8 +100,8 @@
 
         public Command start(double shootingPower) {
             return new InstantCommand(() -> {
-                shootingMotor1.setPower(shootingPower);
-                shootingMotor2.setPower(shootingPower);
+                shootingMotor1.setPower(shootingPower + CORRECTION_DELTA);
+                shootingMotor2.setPower(shootingPower + CORRECTION_DELTA);
                 //telemetry.addData("Shooting Mode", "THIRST");
                 //telemetry.update();
             }).requires(this);
@@ -147,6 +150,9 @@
          */
         @Override
         public void periodic() {
+            telemetry.addData("<===== Shooting Speed Correction =====>", "");
+            telemetry.addData("CORRECTION SHOOTING POWER: ", "%.3f", CORRECTION_DELTA);
+
             telemetry.addData("<=====Shooting System=====>","");
             telemetry.addData("Shooter 1", "Pwr: %.2f | Pos: %.2f | Vel: %.2f",
                     shootingMotor1.getPower(), shootingMotor1.getCurrentPosition(), shootingMotor1.getVelocity());
@@ -154,4 +160,18 @@
                     shootingMotor2.getPower(), shootingMotor2.getCurrentPosition(), shootingMotor2.getVelocity());
             telemetry.update();
         }
+
+        public Command INCREASE_DELTA = new InstantCommand(() -> {
+            if (CORRECTION_DELTA <= 0.05) {
+                CORRECTION_DELTA = CORRECTION_DELTA + 0.01;
+            }
+            telemetry.addData("CORRECTION SHOOTING POWER: ", "%.3f", CORRECTION_DELTA);
+        }).requires(this);
+        public Command DECREASE_DELTA = new InstantCommand(() -> {
+            if (CORRECTION_DELTA > -0.05) {
+                CORRECTION_DELTA = CORRECTION_DELTA - 0.01;
+            }
+            telemetry.addData("CORRECTION SHOOTING POWER: ", "%.3f", CORRECTION_DELTA);
+        }).requires(this);
+
     }
