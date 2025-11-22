@@ -23,6 +23,12 @@ public class ShootingDirectionServo implements Subsystem {
 
     // Used to show info on the Driver Station screen
     private Telemetry telemetry;
+    // The limits of how far the servo can move
+    private final double minPos = 0.36; //0.96; // Lowest position
+    private final double maxPos = 0.56; //0.80; // Highest position
+
+    // How much the servo moves each time you press a button
+    private static final double SERVO_POS_INCREMENT = 0.01;
 
     // This constructor sets up the servo and telemetry system
     private ShootingDirectionServo(Telemetry telemetry) {
@@ -52,13 +58,6 @@ public class ShootingDirectionServo implements Subsystem {
         return INSTANCE;
     }
 
-    // The limits of how far the servo can move
-    private final double minPos = 0.96; // Lowest position
-    private final double maxPos = 0.80; // Highest position
-
-    // How much the servo moves each time you press a button
-    private static final double SERVO_POS_INCREMENT = 0.02;
-
     public void setPosition(double clampedPosition) {
         servo.setPosition(clampedPosition);
     }
@@ -70,7 +69,7 @@ public class ShootingDirectionServo implements Subsystem {
     public Command upShootingServo = new InstantCommand(() -> {
         if (servo != null) {
             // Increases servo position but doesn’t go past its limit
-            double clampedPosition = Math.min(minPos, servo.getPosition() + SERVO_POS_INCREMENT);
+            double clampedPosition = Math.min(maxPos, servo.getPosition() + SERVO_POS_INCREMENT);
             servo.setPosition(clampedPosition);
         }
     }).requires(this);
@@ -82,7 +81,7 @@ public class ShootingDirectionServo implements Subsystem {
     public Command downShootingServo = new InstantCommand(() -> {
         if (servo != null) {
             // Decreases servo position but doesn’t go below its limit
-            double clampedPosition = Math.max(maxPos, servo.getPosition() - SERVO_POS_INCREMENT);
+            double clampedPosition = Math.max(minPos, servo.getPosition() - SERVO_POS_INCREMENT);
             servo.setPosition(clampedPosition);
         }
     }).requires(this);

@@ -46,15 +46,15 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     private Intake intakeSystem;
     private Light light;
 
-    private final double POSITION_CLOSEST = 0.86; // Shooting Direction Servo position angled for the closer shooting point
-    private final double POSITION_SECOND = 0.92; // Shooting Direction Servo position angled for the closer shooting point
-    private final double POSITION_THIRD = 0.96; // Shooting Direction Servo position angled for the closer shooting point
-    private final double POSITION_FOURTH = 0.96; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_CLOSEST = 0.44; //0.86; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_SECOND = 0.50; //0.92; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_THIRD = 0.54; //0.96; // Shooting Direction Servo position angled for the closer shooting point
+    private final double POSITION_FOURTH = 0.55; //0.96; // Shooting Direction Servo position angled for the closer shooting point
 
-    private static final double FIRST_SHOOTING_POWER = 0.40;      // Low power shoot
-    private static final double SECOND_SHOOTING_POWER = 0.50;      // Low power shoot
-    private static final double THIRD_SHOOTING_POWER = 0.60;      // Medium power shoot
-    private static final double FOURTH_SHOOTING_POWER = 0.75;      // Medium power shoot
+    private static final double FIRST_SHOOTING_POWER = 0.45;      // Low power shoot
+    private static final double SECOND_SHOOTING_POWER = 0.55;      // Low power shoot
+    private static final double THIRD_SHOOTING_POWER = 0.65;      // Medium power shoot
+    private static final double FOURTH_SHOOTING_POWER = 0.80;      // Medium power shoot
 
 
     protected final IMUEx imu = new IMUEx("imu", Direction.DOWN, Direction.FORWARD).zeroed();
@@ -123,6 +123,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
                 )
         );
 
+        shootingDirectionServo.PositionForSpecificDistance(0.38).schedule();
         // Right bumper → start/stop the Intake system
         Gamepads.gamepad2().rightBumper().whenBecomesTrue(intakeSystem.startStop);
 
@@ -184,11 +185,11 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         // D-Pad Right → stop the ball loading servo
         //Gamepads.gamepad2().dpadRight().whenBecomesTrue(ballLoadingServo.stopContinuous());
         //Gamepads.gamepad2().dpadRight().whenBecomesTrue(ballLoadingServo.REVERSEANDSTOP());
-//New Update
-        // D-Pad Up → aim the shooter down
+
+        // D-Pad Up → aim the shooter up
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(shootingDirectionServo.downShootingServo);
 
-        // D-Pad Down → aim the shooter up
+        // D-Pad Down → aim the shooter down
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(shootingDirectionServo.upShootingServo);
     }
 
