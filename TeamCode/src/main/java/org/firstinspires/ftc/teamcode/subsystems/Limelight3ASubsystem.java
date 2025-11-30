@@ -51,13 +51,13 @@ public class Limelight3ASubsystem implements Subsystem {
     private static final double Y_TX_MAX_DEG =  3.0;
 
     // Distance bands in INCHES (use MIN–MAX ranges)
-    private static final double A_MIN_DISTANCE_IN = 22.0;
-    private static final double A_MAX_DISTANCE_IN = 26.0;
+    private static final double A_MIN_DISTANCE_IN = 20.0;
+    private static final double A_MAX_DISTANCE_IN = 25.0;
 
-    private static final double B_MIN_DISTANCE_IN = 43.0;
-    private static final double B_MAX_DISTANCE_IN = 49.0;
+    private static final double B_MIN_DISTANCE_IN = 39.0;
+    private static final double B_MAX_DISTANCE_IN = 47.0;
 
-    private static final double X_MIN_DISTANCE_IN = 68.0;
+    private static final double X_MIN_DISTANCE_IN = 64.0;
     private static final double X_MAX_DISTANCE_IN = 76.0;
 
     private static final double Y_MIN_DISTANCE_IN = 126.0;
