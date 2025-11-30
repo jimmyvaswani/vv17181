@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 // These are the "subsystems" — little robot parts that do special jobs
 import org.firstinspires.ftc.teamcode.subsystems.BallLoadingServo;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Limelight3ASubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShootingDirectionServo;
 import org.firstinspires.ftc.teamcode.subsystems.ShootingSystem;
 import org.firstinspires.ftc.teamcode.subsystems.Light;
@@ -43,6 +44,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     private BallLoadingServo ballLoadingServo;
     private Intake intakeSystem;
     private Light light;
+    private Limelight3ASubsystem limelight3ASubsystem;
 
     private final double POSITION_CLOSEST = 0.36; //0.86; // Shooting Direction Servo position angled for the closer shooting point
     private final double POSITION_SECOND = 0.31; //0.92; // Shooting Direction Servo position angled for the closer shooting point
@@ -67,9 +69,16 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
 
         // FIX: Get the singleton instance instead of creating new Light()
         light = Light.INSTANCE;
+    }
+
+    @Override
+    public void onInit() {
+        super.onInit();
+        limelight3ASubsystem = Limelight3ASubsystem.getInstance(this.hardwareMap, telemetry, imu);
 
         // Here we "add" all these subsystems so NextFTC can manage and update them automatically
         addComponents(
+                new SubsystemComponent(limelight3ASubsystem),
                 new SubsystemComponent(shootingSystem),
                 new SubsystemComponent(intakeSystem),
                 new SubsystemComponent(shootingDirectionServo),
@@ -91,7 +100,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed() {
 
-        light.setPattern(Light.SOLID_PURPLE_POSITION).schedule();
+        //light.setPattern(Light.SOLID_PURPLE_POSITION).schedule();
         // This tells the robot how to drive using mecanum wheels (which move in all directions)
         Command driverControlled = new MecanumDriverControlled(
                 frontLeftMotor,

@@ -11,9 +11,9 @@ public class Light implements Subsystem {
     // Servo positions for the goBILDA RGB Light (approximate common values)
     // Refer to this page for more insights on color -> value https://www.gobilda.com/rgb-indicator-light-pwm-controlled/
     // These specific values correspond to persistent, solid colors.
-    public static final double OFF_POSITION = 0.5;
+    public static final double OFF_POSITION = 0.6; // Blue
     public static final double SOLID_RED_POSITION = 0.7;
-    public static final double SOLID_GREEN_POSITION = 0.6;
+    public static final double SOLID_GREEN_POSITION = 0.5;
     public static final double SOLID_BLUE_POSITION = 0.8;
     public static final double SOLID_PURPLE_POSITION = 0.70;
 
@@ -25,8 +25,15 @@ public class Light implements Subsystem {
 
     @Override
     public void periodic() {
+
         // The periodic loop constantly applies the target position, ensuring the color/pattern stays active
-        servo.setPosition(targetPosition);
+        //servo.setPosition(targetPosition);
+        // Change the light to GREEN when the robot position (a,b,x,y) is ideal for shooting. Zero (0) is default.
+        if(Limelight3ASubsystem.getInstance().getIdentifiedShootingPosition() != '0') {
+            servo.setPosition(SOLID_GREEN_POSITION);
+        } else {
+            servo.setPosition(SOLID_PURPLE_POSITION);
+        }
     }
 
     @Override
